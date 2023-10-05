@@ -176,6 +176,7 @@ class ContractFilter extends Component {
                             checked={!!this._filterValue('isDeleted')}
                             onChange={event => this._onChangeFilter('isDeleted', event.target.checked)}
                             name="isDeleted" 
+                            color="primary"
                         />}
                         label={formatMessage(intl, "contract", "isDeleted")}
                     />
