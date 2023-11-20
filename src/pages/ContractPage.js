@@ -65,11 +65,17 @@ class ContractPage extends Component {
                 formatMessageWithValues(intl, "contract", "UpdateContract.mutationLabel", this.titleParams(contract)),
                 readOnlyFields
             );
+            setTimeout(() => {
+                this.props.history.goBack();
+            }, 2000)
         } else {
             createContract(
                 contract,
                 formatMessageWithValues(intl, "contract", "CreateContract.mutationLabel", this.titleParams(contract))
             );
+            setTimeout(() => {
+                this.props.history.goBack();
+            }, 2000)
         }
     }
 
@@ -95,7 +101,7 @@ class ContractPage extends Component {
         let confirmedAction = () => {
             amendContract(
                 contract,
-                formatMessageWithValues(intl, "contract", "amendContract.mutationLabel", { 
+                formatMessageWithValues(intl, "contract", "amendContract.mutationLabel", {
                     amendment: contract.amendment + AMENDMENT_INCREMENT,
                     contract: contract.code
                 })
