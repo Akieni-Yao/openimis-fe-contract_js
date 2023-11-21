@@ -65,17 +65,17 @@ class ContractPage extends Component {
                 formatMessageWithValues(intl, "contract", "UpdateContract.mutationLabel", this.titleParams(contract)),
                 readOnlyFields
             );
-            setTimeout(() => {
-                this.props.history.goBack();
-            }, 2000)
+            // setTimeout(() => {
+            //     this.props.history.goBack();
+            // }, 2000)
         } else {
             createContract(
                 contract,
                 formatMessageWithValues(intl, "contract", "CreateContract.mutationLabel", this.titleParams(contract))
             );
-            setTimeout(() => {
-                this.props.history.goBack();
-            }, 2000)
+            // setTimeout(() => {
+            //     this.props.history.goBack();
+            // }, 2000)
         }
     }
 
