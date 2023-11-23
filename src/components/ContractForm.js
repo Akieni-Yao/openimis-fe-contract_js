@@ -19,7 +19,7 @@ import {
     decodeId,
     Helmet,
 } from "@openimis/fe-core";
-import { fetchContract, clearContract} from "../actions";
+import { fetchContract, clearContract } from "../actions";
 import {
     UPDATABLE_STATES,
     APPROVABLE_STATES,
@@ -33,6 +33,7 @@ import {
 } from "../constants";
 import ContractHeadPanel from "./ContractHeadPanel";
 import ContractTabPanel from "./ContractTabPanel";
+import CommonSnackbar from "./CommonSnakbar";
 
 const styles = theme => ({
     fab: theme.fab,
@@ -106,13 +107,13 @@ class ContractForm extends Component {
 
     isMandatoryFieldsEmpty = () => {
         const { contract } = this.state;
-        if (!!contract.code && !!contract.dateValidFrom && !!contract.dateValidTo) {
+        if (!!contract.dateValidFrom && !!contract.dateValidTo) {
             return false;
         }
         return true;
     }
 
-    canSave = () => !this.isMandatoryFieldsEmpty() && this.props.isCodeValid;
+    canSave = () => !this.isMandatoryFieldsEmpty();
 
     save = contract => this.props.save(contract, this.state.readOnlyFields);
 
@@ -122,7 +123,7 @@ class ContractForm extends Component {
 
     isContractStateNotNull = () => !!this.state.contract && !!this.state.contract.state;
 
-    isUpdatable = () =>  this.isContractStateNotNull() && this.updatableStates.includes(this.state.contract.state);
+    isUpdatable = () => this.isContractStateNotNull() && this.updatableStates.includes(this.state.contract.state);
 
     isApprovable = () => this.isContractStateNotNull() && this.approvableStates.includes(this.state.contract.state);
 
@@ -213,11 +214,24 @@ class ContractForm extends Component {
                     isPolicyHolderPredefined={!!predefinedPolicyHolderId}
                     openDirty={save}
                 />
+                <CommonSnackbar
+                    open={this.props.snackbar}
+                    onClose={this.props.handleClose}
+                    message={formatMessageWithValues(
+                        intl,
+                        "contract",
+                        "contract.CreateContract.snackbar",
+                        {}
+                    )}
+                    severity="success"
+                    copyText={this.props.resCode && this.props.resCode}
+                    backgroundColor="#00913E"
+                />
                 {rights.includes(RIGHT_POLICYHOLDERCONTRACT_APPROVE) && this.isApprovable() && !this.state.isDirty && (
                     <Tooltip title={formatMessage(intl, "contract", "counterButton.tooltip")} placement="left">
                         <div className={classes.counterFab}>
                             <Fab color="primary" size="small" onClick={() => counter(this.state.contract)}>
-                                <CloseIcon/>
+                                <CloseIcon />
                             </Fab>
                         </div>
                     </Tooltip>

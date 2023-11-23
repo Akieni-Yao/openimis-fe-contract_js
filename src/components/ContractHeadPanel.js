@@ -151,7 +151,7 @@ class ContractHeadPanel extends FormPanel {
         )}
         <Grid container className={classes.item}>
           <Grid item xs={2} className={classes.item}>
-            <ValidatedTextInput
+            {/* <ValidatedTextInput
               itemQueryIdentifier="contractCode"
               codeTakenLabel="contract.codeTaken"
               shouldValidate={this.shouldValidate}
@@ -168,6 +168,14 @@ class ContractHeadPanel extends FormPanel {
               inputProps={{ maxLength: MAX_CODE_LENGTH }}
               onChange={(v) => this.updateAttribute("code", v)}
               readOnly={readOnlyFields.includes("code") || isAmendment}
+            /> */}
+            <TextInput
+              module="contract"
+              label="code"
+              // inputProps={{ maxLength: MAX_TRADENAME_LENGTH }}
+              value={!!edited && !!edited.code ? edited.code : ""}
+              onChange={(v) => this.updateAttribute("code", v)}
+              readOnly={true}
             />
           </Grid>
           <Grid item xs={2} className={classes.item}>

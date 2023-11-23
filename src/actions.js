@@ -6,6 +6,7 @@ import {
   formatMutation,
   formatGQLString,
   graphqlWithVariables,
+  graphqlMutationLegacy
 } from "@openimis/fe-core";
 import { APPLY_DEFAULT_VALIDITY_FILTER } from "./constants";
 
@@ -28,7 +29,7 @@ const CONTRACT_FULL_PROJECTION = (modulesManager) => [
   "dateValidTo",
   "isDeleted",
   "policyHolder" +
-    modulesManager.getProjection("policyHolder.PolicyHolderPicker.projection"),
+  modulesManager.getProjection("policyHolder.PolicyHolderPicker.projection"),
 ];
 
 export const CONTRACT_PICKER_PROJECTION = ["id", "code"];
@@ -39,18 +40,18 @@ const CONTRACTDETAILS_FULL_PROJECTION = (modulesManager) => [
   "contract{id}",
   "insuree" + modulesManager.getProjection("insuree.InsureePicker.projection"),
   "contributionPlanBundle" +
-    modulesManager.getProjection(
-      "contributionPlan.ContributionPlanBundlePicker.projection"
-    ),
+  modulesManager.getProjection(
+    "contributionPlan.ContributionPlanBundlePicker.projection"
+  ),
 ];
 
 const CONTRACTCONTRIBUTIONDETAILS_FULL_PROJECTION = (modulesManager) => [
   "jsonExt",
   "contractDetails" + `{${CONTRACTDETAILS_FULL_PROJECTION(modulesManager)}}`,
   "contributionPlan" +
-    modulesManager.getProjection(
-      "contributionPlan.ContributionPlanPicker.projection"
-    ),
+  modulesManager.getProjection(
+    "contributionPlan.ContributionPlanPicker.projection"
+  ),
 ];
 
 const INSUREEPOLICY_FULL_PROJECTION = (modulesManager) => [
@@ -146,73 +147,59 @@ function formatContractGQL(contract, readOnlyFields = []) {
   }
   return `
         ${!!contract.id ? `id: "${decodeId(contract.id)}"` : ""}
-        ${
-          !!contract.code && !readOnlyFields.includes("code")
-            ? `code: "${formatGQLString(contract.code)}"`
-            : ""
-        }
-        ${
-          !!contract.policyHolder && !readOnlyFields.includes("policyHolder")
-            ? `policyHolderId: "${policyHolderId}"`
-            : ""
-        }
-        ${
-          !!contract.dateApproved && !readOnlyFields.includes("dateApproved")
-            ? `dateApproved: "${contract.dateApproved}"`
-            : ""
-        }
-        ${
-          !!contract.datePaymentDue &&
-          !readOnlyFields.includes("datePaymentDue")
-            ? `datePaymentDue: "${contract.datePaymentDue}"`
-            : ""
-        }
-        ${
-          !!contract.paymentReference &&
-          !readOnlyFields.includes("paymentReference")
-            ? `paymentReference: "${formatGQLString(
-                contract.paymentReference
-              )}"`
-            : ""
-        }
-        ${
-          !!contract.dateValidFrom && !readOnlyFields.includes("dateValidFrom")
-            ? `dateValidFrom: "${dateTimeToDate(contract.dateValidFrom)}"`
-            : ""
-        }
-        ${
-          !!contract.dateValidTo && !readOnlyFields.includes("dateValidTo")
-            ? `dateValidTo: "${dateTimeToDate(contract.dateValidTo)}"`
-            : ""
-        }
+        ${!!contract.id ? "" : `code: ""`}
+        ${!!contract.policyHolder && !readOnlyFields.includes("policyHolder")
+      ? `policyHolderId: "${policyHolderId}"`
+      : ""
+    }
+        ${!!contract.dateApproved && !readOnlyFields.includes("dateApproved")
+      ? `dateApproved: "${contract.dateApproved}"`
+      : ""
+    }
+        ${!!contract.datePaymentDue &&
+      !readOnlyFields.includes("datePaymentDue")
+      ? `datePaymentDue: "${contract.datePaymentDue}"`
+      : ""
+    }
+        ${!!contract.paymentReference &&
+      !readOnlyFields.includes("paymentReference")
+      ? `paymentReference: "${formatGQLString(
+        contract.paymentReference
+      )}"`
+      : ""
+    }
+        ${!!contract.dateValidFrom && !readOnlyFields.includes("dateValidFrom")
+      ? `dateValidFrom: "${dateTimeToDate(contract.dateValidFrom)}"`
+      : ""
+    }
+        ${!!contract.dateValidTo && !readOnlyFields.includes("dateValidTo")
+      ? `dateValidTo: "${dateTimeToDate(contract.dateValidTo)}"`
+      : ""
+    }
     `;
 }
 
 function formatContractDetailsGQL(contractDetails) {
   return `
         ${!!contractDetails.id ? `id: "${decodeId(contractDetails.id)}"` : ""}
-        ${
-          !!contractDetails.contract
-            ? `contractId: "${decodeId(contractDetails.contract.id)}"`
-            : ""
-        }
-        ${
-          !!contractDetails.insuree
-            ? `insureeId: ${decodeId(contractDetails.insuree.id)}`
-            : ""
-        }
-        ${
-          !!contractDetails.contributionPlanBundle
-            ? `contributionPlanBundleId: "${decodeId(
-                contractDetails.contributionPlanBundle.id
-              )}"`
-            : ""
-        }
-        ${
-          !!contractDetails.jsonExt
-            ? `jsonExt: ${JSON.stringify(contractDetails.jsonExt)}`
-            : ""
-        }
+        ${!!contractDetails.contract
+      ? `contractId: "${decodeId(contractDetails.contract.id)}"`
+      : ""
+    }
+        ${!!contractDetails.insuree
+      ? `insureeId: ${decodeId(contractDetails.insuree.id)}`
+      : ""
+    }
+        ${!!contractDetails.contributionPlanBundle
+      ? `contributionPlanBundleId: "${decodeId(
+        contractDetails.contributionPlanBundle.id
+      )}"`
+      : ""
+    }
+        ${!!contractDetails.jsonExt
+      ? `jsonExt: ${JSON.stringify(contractDetails.jsonExt)}`
+      : ""
+    }
     `;
 }
 
@@ -223,7 +210,7 @@ export function createContract(contract, clientMutationLabel) {
     clientMutationLabel
   );
   var requestedDateTime = new Date();
-  return graphql(
+  return graphqlMutationLegacy(
     mutation.payload,
     [
       "CONTRACT_MUTATION_REQ",
@@ -234,7 +221,9 @@ export function createContract(contract, clientMutationLabel) {
       clientMutationId: mutation.clientMutationId,
       clientMutationLabel,
       requestedDateTime,
-    }
+    },
+    true,
+    "contracts { contract { id code }}",
   );
 }
 
@@ -249,7 +238,7 @@ export function updateContract(
     clientMutationLabel
   );
   var requestedDateTime = new Date();
-  return graphql(
+  return graphqlMutationLegacy(
     mutation.payload,
     [
       "CONTRACT_MUTATION_REQ",
@@ -260,7 +249,10 @@ export function updateContract(
       clientMutationId: mutation.clientMutationId,
       clientMutationLabel,
       requestedDateTime,
-    }
+    },
+    true,
+    "contracts { contract { id code }}",
+
   );
 }
 
