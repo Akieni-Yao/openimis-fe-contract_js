@@ -98,11 +98,11 @@ class ContractPage extends Component {
                     if (!response.error) {
                         console.log("Got code", response?.contracts[0]?.contract?.code);
                         this.setState({ snackbar: true });
-                        this.setState({ resCode: response?.contracts[0]?.contract?.code });
+                        this.setState({ resCode: !!response?.contracts[0]?.contract?.code ? response?.contracts[0]?.contract?.code : contract?.code });
                         setTimeout(() => {
                             this.props.history.goBack();
                         }, 5000);
-                    }C
+                    } C
                 })
                 .catch(error => {
                     // Handle the error
@@ -110,6 +110,7 @@ class ContractPage extends Component {
                 });
         };
         if (!!contract.id) {
+
             handleAsyncOperation(
                 updateContract,
                 formatMessageWithValues(intl, "contract", "UpdateContract.mutationLabel", this.titleParams(contract)), readOnlyFields
