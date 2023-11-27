@@ -101,7 +101,7 @@ class ContractPage extends Component {
                         this.setState({ resCode: !!response?.contracts[0]?.contract?.code ? response?.contracts[0]?.contract?.code : contract?.code });
                         setTimeout(() => {
                             this.props.history.goBack();
-                        }, 5000);
+                        }, 3000);
                     } C
                 })
                 .catch(error => {
