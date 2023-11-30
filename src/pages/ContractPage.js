@@ -40,7 +40,8 @@ class ContractPage extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            amendConfirmed: false
+            amendConfirmed: false,
+            snackbar: false, resCode: ""
         }
         this.predefinedPolicyHolderId = !!props.contractId
             ? null
@@ -56,29 +57,75 @@ class ContractPage extends Component {
     setConfirmedAction = (confirm, confirmedAction) => this.setState({ confirmedAction }, confirm);
 
     back = () => this.props.history.goBack();
+    handleClose = () => {
+        this.setState({ snackbar: false });
+    }
+    // save =  (contract, readOnlyFields) => {
+    //     const { intl, createContract, updateContract } = this.props;
+    //     // try {
+    //         if (!!contract.id) {
+    //              updateContract(
+    //                 contract,
+    //                 formatMessageWithValues(intl, "contract", "UpdateContract.mutationLabel", this.titleParams(contract)),
+    //                 readOnlyFields
+    //             );
+    //             // setTimeout(() => {
+    //             //     this.props.history.goBack();
+    //             // }, 5000)
+    //         } else {
+    //             const response =  createContract(
+    //                 contract,
+    //                 formatMessageWithValues(intl, "contract", "CreateContract.mutationLabel", this.titleParams(contract))
+    //             );
+    //             console.log("response", response)
+    //             // setTimeout(() => {
+    //             //     this.props.history.goBack();
+    //             // }, 5000)
+    //         }
 
+    //     // }
+    //     // catch (error) {
+    //     //     console.log('error', error);
+    //     // }
+    // }
     save = (contract, readOnlyFields) => {
         const { intl, createContract, updateContract } = this.props;
+        const handleAsyncOperation = (operation, label, params) => {
+            return operation(contract, label, params)
+                .then(response => {
+                    // Handle the response as needed
+                    console.log('response', response);
+                    if (!response.error) {
+                        console.log("Got code", response?.contracts[0]?.contract?.code);
+                        this.setState({ snackbar: true });
+                        this.setState({ resCode: !!response?.contracts[0]?.contract?.code ? response?.contracts[0]?.contract?.code : contract?.code });
+                        setTimeout(() => {
+                            this.props.history.goBack();
+                        }, 3000);
+                    } C
+                })
+                .catch(error => {
+                    // Handle the error
+                    console.log('error', error);
+                });
+        };
         if (!!contract.id) {
-            updateContract(
-                contract,
-                formatMessageWithValues(intl, "contract", "UpdateContract.mutationLabel", this.titleParams(contract)),
-                readOnlyFields
+
+            handleAsyncOperation(
+                updateContract,
+                formatMessageWithValues(intl, "contract", "UpdateContract.mutationLabel", this.titleParams(contract)), readOnlyFields
             );
-            // setTimeout(() => {
-            //     this.props.history.goBack();
-            // }, 2000)
+            ;
+
         } else {
-            createContract(
-                contract,
+            handleAsyncOperation(
+                createContract,
                 formatMessageWithValues(intl, "contract", "CreateContract.mutationLabel", this.titleParams(contract))
             );
-            // setTimeout(() => {
-            //     this.props.history.goBack();
-            // }, 2000)
-        }
-    }
+            ;
 
+        }
+    };
     action = (contract, action, label) => {
         const { intl, coreConfirm } = this.props;
         let confirm = () => coreConfirm(
@@ -113,7 +160,7 @@ class ContractPage extends Component {
 
     toggleAmendConfirmed = () => this.setState(state => ({ amendConfirmed: !state.amendConfirmed }));
 
-    titleParams = contract => ({ label: !!contract.code ? contract.code : null });
+    titleParams = contract => ({ label: !!contract.code ? contract?.code : null });
 
     isSufficientRights = () =>
         [
@@ -145,6 +192,9 @@ class ContractPage extends Component {
                         amendConfirmed={this.state.amendConfirmed}
                         toggleAmendConfirmed={this.toggleAmendConfirmed}
                         predefinedPolicyHolderId={this.predefinedPolicyHolderId}
+                        snackbar={this.state.snackbar}
+                        resCode={this.state.resCode}
+                        handleClose={this.handleClose}
                     />
                 </div>
             )
