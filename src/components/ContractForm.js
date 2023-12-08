@@ -67,6 +67,7 @@ class ContractForm extends Component {
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (prevProps.fetchedContract !== this.props.fetchedContract && !!this.props.fetchedContract) {
+            // console.log('checking....');
             this.setState(
                 (state, props) => ({
                     contract: {
@@ -92,10 +93,12 @@ class ContractForm extends Component {
                 this.setState((_, props) => ({ createMutationId: props.mutation.clientMutationId }));
             }
         } else if (prevProps.policyHolders !== this.props.policyHolders) {
+            // console.log('checking2....', this.props.policyHolders);
             this.setState((state, props) => ({
                 contract: {
                     ...state.contract,
-                    policyHolder: props.policyHolders.find((v) => decodeId(v.id) === props.predefinedPolicyHolderId)
+                    // policyHolder: props.policyHolders.find((v) => decodeId(v.id) === props.predefinedPolicyHolderId)
+                    policyHolder: { id: props.predefinedPolicyHolderId }
                 }
             }));
         }
