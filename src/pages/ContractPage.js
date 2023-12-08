@@ -99,10 +99,10 @@ class ContractPage extends Component {
                         console.log("Got code", response?.contracts[0]?.contract?.code);
                         this.setState({ snackbar: true });
                         this.setState({ resCode: !!response?.contracts[0]?.contract?.code ? response?.contracts[0]?.contract?.code : contract?.code });
-                        setTimeout(() => {
-                            this.props.history.goBack();
-                        }, 5000);
-                    } C
+                        // setTimeout(() => {
+                        //     this.props.history.goBack();
+                        // }, 5000);
+                    } 
                 })
                 .catch(error => {
                     // Handle the error
