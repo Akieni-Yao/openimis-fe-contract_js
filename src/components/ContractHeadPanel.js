@@ -118,6 +118,7 @@ class ContractHeadPanel extends FormPanel {
       isCodeValidating,
       codeValidationError,
     } = this.props;
+    // console.log("edited.policyHolder", edited)
     return (
       <Fragment>
         <Grid container className={classes.tableTitle}>

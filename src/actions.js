@@ -138,9 +138,12 @@ export function fetchInsureePolicies(modulesManager, params) {
 
 function formatContractGQL(contract, readOnlyFields = []) {
   // check if uuid decoded correctly
+  // console.log("contract", contract);
   var policyHolderId = null;
   if (contract.policyHolder && !readOnlyFields.includes("policyHolder")) {
-    policyHolderId = contract.policyHolder.id;
+    // policyHolderId = !!contract.policyHolder.id ? contract.policyHolder.id : contract.policyHolder;
+    policyHolderId = contract.policyHolder.id
+    // console.log("regexExp.test(policyHolderId)", policyHolderId)
     policyHolderId = regexExp.test(policyHolderId)
       ? policyHolderId
       : decodeId(policyHolderId);
