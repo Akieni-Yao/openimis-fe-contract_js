@@ -146,7 +146,9 @@ function formatContractGQL(contract, readOnlyFields = []) {
     // console.log("regexExp.test(policyHolderId)", policyHolderId)
     policyHolderId = regexExp.test(policyHolderId)
       ? policyHolderId
-      : decodeId(policyHolderId);
+      : policyHolderId;
+
+      // : decodeId(policyHolderId);
   }
   return `
         ${!!contract.id ? `id: "${decodeId(contract.id)}"` : ""}
